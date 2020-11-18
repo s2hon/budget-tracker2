@@ -25,7 +25,7 @@ self.addEventListener("install", function (event) {
 });
 
 self.addEventListener("activate", event => {
-    const currentCaches = [STATIC_CACHE, RUNTIME_CACHE];
+    const currentCaches = [STATIC_CACHE, DATA_CACHE];
 event.waitUntil(
     caches.keys()
     .then(cacheNames => {
@@ -52,7 +52,7 @@ event.waitUntil(
 self.addEventListener("fetch", function(event) {
     if (event.request.url.includes("/api/")) {
         event.respondWith(
-        caches.open(DATA_CACHE_NAME).then(cache => {
+        caches.open(DATA_CACHE).then(cache => {
             return fetch(event.request)
             .then(response => {
                 // If the response was good, clone it and store it in the cache.
