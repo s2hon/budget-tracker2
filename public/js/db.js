@@ -18,7 +18,7 @@ checkDatabase();
 };
 
 // log error here
-request.onerror = () => {console.log("error", request.error)};
+request.onerror = (event) => {console.log("error", event.target.errorCode)};
 
 function saveRecord(record) {
   // create a transaction on the pending db with readwrite access
@@ -40,17 +40,17 @@ function checkDatabase() {
     getAll.onsuccess = function () {
     if (getAll.result.length > 0) {
         fetch('/api/transaction/bulk', {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(getAll.result),
         headers: {
-            Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json',
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
         },
         })
         .then((response) => response.json())
         .then(() => {
             // if successful, open a transaction on your pending db
-            let transaction = db.transaction("pending");
+            let transaction = db.transaction(["pending"], "readwrite");
             // access your pending object store
             let pending = transaction.objectStore("pending");
             // clear all items in your store
@@ -61,4 +61,4 @@ function checkDatabase() {
 }
 
 // listen for app coming back online
-window.addEventListener('online', checkDatabase);
+window.addEventListener("online", checkDatabase);
